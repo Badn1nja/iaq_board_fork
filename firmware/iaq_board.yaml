@@ -35,6 +35,7 @@ substitutions:
 esphome:
   name: iaq-board
   friendly_name: IAQ Board
+  name_add_mac_suffix: true
     
   on_boot:
     then:
