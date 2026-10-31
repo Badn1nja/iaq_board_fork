@@ -5,7 +5,7 @@ esp32:
     
 esphome:
   name: iaq-board
-  friendly_name: IAQ Board 2
+  friendly_name: IAQ Board
   name_add_mac_suffix: false #Change if using Mac Suffix - For EspDevice Builder I manually appended as it caused me issues
     
   on_boot:
