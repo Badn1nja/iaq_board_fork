@@ -5,7 +5,7 @@ esp32:
     
 esphome:
   name: iaq-board
-  friendly_name: IAQ Board
+  friendly_name: IAQ Board 2
   name_add_mac_suffix: false #Change if using Mac Suffix - For EspDevice Builder I manually appended as it caused me issues
     
   on_boot:
@@ -29,7 +29,7 @@ esphome:
         
 # Enable Home Assistant API
 api:
-  reboot_timeout: 0s
+  reboot_timeout: 30s
 #  encryption:
 #    key: ""
 # Required for Home Assistant Intergration
@@ -189,6 +189,7 @@ font:
 
 uart:
   - rx_pin: GPIO1
+    tx_pin: GPIO4  # Dummy pin required by ESPHome compiler for pmsx003 component
     baud_rate: 9600
     id: pms
   
@@ -350,7 +351,7 @@ sensor:
         id: pm10
         filters:
           - delta: 1.0
-      update_interval: 15s
+      update_interval: 30s
 
     - platform: bme280_i2c
       temperature:
@@ -659,7 +660,7 @@ light:
     pin: GPIO16
     name: "RGB strip"
     chipset: WS2812
-    rgb_order: GRB
+    channel_colors: GRB
     id: rgb_led
     default_transition_length: 0s
 switch:
