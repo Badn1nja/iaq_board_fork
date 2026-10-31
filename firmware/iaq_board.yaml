@@ -2,7 +2,31 @@ esp32:
   board: wemos_d1_mini32
   framework:
     type: arduino
-
+    
+esphome:
+  name: iaq-board
+  friendly_name: IAQ Board
+  name_add_mac_suffix: false #Change if using Mac Suffix - For EspDevice Builder I manually appended as it caused me issues
+    
+  on_boot:
+    then:
+      - lambda: 'id(pm2_5).publish_state(1.0);'
+      - lambda: 'id(co2).publish_state(400);'
+      - light.control:
+          id: led1
+          brightness: 0.25
+          state: on
+      - light.control:
+          id: led2
+          brightness: 0.25
+          state: on
+      - light.control:
+          id: led3
+          brightness: 0.25
+          state: on
+      - delay: 1 min
+      - script.execute: min_max_zero_script
+        
 # Enable Home Assistant API
 api:
   reboot_timeout: 0s
@@ -32,30 +56,6 @@ web_server:
 substitutions:
   yaml_version: "1.1.3"
 
-esphome:
-  name: iaq-board
-  friendly_name: IAQ Board
-  name_add_mac_suffix: false #Change if using Mac Suffix - For EspDevice Builder I manually appended as it caused me issues
-    
-  on_boot:
-    then:
-      - lambda: 'id(pm2_5).publish_state(1.0);'
-      - lambda: 'id(co2).publish_state(400);'
-      - light.control:
-          id: led1
-          brightness: 0.25
-          state: on
-      - light.control:
-          id: led2
-          brightness: 0.25
-          state: on
-      - light.control:
-          id: led3
-          brightness: 0.25
-          state: on
-      - delay: 1 min
-      - script.execute: min_max_zero_script
-        
 script:
   - id: min_max_zero_script
     then: 
