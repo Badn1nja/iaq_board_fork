@@ -82,7 +82,7 @@ button:
     name: "Next Screen"
     id: iaq_screen_refresh
     # Optional variables:
-    icon: "mdi:screen-rotatio"
+    icon: "mdi:screen-rotation"
     on_press:
       then:
         - lambda: |-
@@ -276,9 +276,13 @@ sensor:
       pm_1_0:
         name: "PM 1 Concentration"
         id: pm1
+        filters:
+          - delta: 1.0
       pm_2_5:
         name: "PM 2.5 Concentration"
         id: pm2_5
+        filters:
+          - delta: 1.0
         on_value:
           - if:
               condition:
@@ -344,6 +348,9 @@ sensor:
       pm_10_0:
         name: "PM 10 Concentration"
         id: pm10
+        filters:
+          - delta: 1.0
+      update_interval: 15s
 
     - platform: bme280_i2c
       temperature:
@@ -352,6 +359,7 @@ sensor:
         id: temp
         filters:
           - offset: -1.5
+          - delta: 0.1
         on_value:
           - lambda: |-
               if(id(temp).state > id(temp_max)) { id(temp_max) = id(temp).state; }
@@ -360,17 +368,23 @@ sensor:
         name: "Pressure"
         oversampling: 1x
         id: press
+        filters:
+          - delta: 0.5
       humidity:
         name: "Humidity"
         oversampling: 1x
         id: hum
+        filters:
+          - delta: 1.0
       address: 0x76
-      update_interval: 10s
-      
+      update_interval: 15s
+        
     - platform: mhz19
       co2:
         name: "CO2"
         id: co2
+        filters:
+          - delta: 5.0
         on_value:
           - if:
               condition:
@@ -436,11 +450,11 @@ sensor:
 
       temperature:
         name: "MH-Z19 Temperature"
-      update_interval: 10s
+      update_interval: 15s
       automatic_baseline_calibration: false
       uart_id: mh
       id: mh_sensor
-      
+        
     - platform: tsl2561
       name: "Ambient Light"
       update_interval: 3s
@@ -465,23 +479,25 @@ sensor:
         name: "eCO2"
         accuracy_decimals: 1
         id: eco2
+        filters:
+          - throttle: 15s
+          - delta: 5.0
       tvoc:
         name: "TVOC"
         accuracy_decimals: 1
         id: tvoc
+        filters:
+          - throttle: 15s
+          - delta: 5.0
       update_interval: 1s
-      # https://esphome.io/components/sensor/sgp30.html#calibrating-baseline
-      # baseline:
-      #   eco2_baseline: 0x92B7
-      #   tvoc_baseline: 0x935A
       compensation:
-         temperature_source: temp
-         humidity_source: hum
-      
+          temperature_source: temp
+          humidity_source: hum
+        
     - platform: uptime
       name: Uptime
       id: utime_sensor
-      
+        
     - platform: template
       name: "PM2.5 24h average"
       id: pm2_5_avg
@@ -538,7 +554,7 @@ sensor:
                   blue: 0
               - text_sensor.template.publish:
                   id: aqi
-                  state: "Moderate"                  
+                  state: "Moderate"                 
         - if:
             condition:
               sensor.in_range:
@@ -553,7 +569,7 @@ sensor:
                   blue: 1
               - text_sensor.template.publish:
                   id: aqi
-                  state: "Poor"                  
+                  state: "Poor"                 
         - if:
             condition:
               sensor.in_range:
@@ -568,7 +584,7 @@ sensor:
                   blue: 0
               - text_sensor.template.publish:
                   id: aqi
-                  state: "Very Poor"                  
+                  state: "Very Poor"                 
         - if:
             condition:
               sensor.in_range:
@@ -584,9 +600,6 @@ sensor:
                   id: aqi
                   state: "Extremely Poor"                      
 
-# This is a "helper" template sensor which is doing 30 sec moving average of PM2.5
-# I use it for sensing in automations controlling purifiers (with Home Assistant), 
-# in order to remove the outlier values and making the control more smooth
     - platform: template
       name: "PM2.5 median"
       id: pm2_5_median
@@ -600,6 +613,7 @@ sensor:
             window_size: 30
             send_every: 30
             send_first_at: 15
+        - delta: 1.0
 
 text_sensor:
   - platform: wifi_info
@@ -672,17 +686,6 @@ switch:
           else { id(brightness_correction) += 0.05; }
       - switch.turn_off: brightness_cal_template
     id: brightness_cal_template
-
-# The bellow interval can be used if you want to turn on PMS dust sensor
-# for 10s each 1min. Can help for longetivity of the sensor, but I do not
-# use it. Sensors are cheap to replace if they fail.
-
-# interval:
-#   - interval: 60s
-#     then:
-#       - switch.turn_on: pms_set
-#       - delay: 10s
-#       - switch.turn_off: pms_set
 
 display:
   - platform: ssd1306_i2c
