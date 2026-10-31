@@ -629,25 +629,25 @@ light:
     id: led2
     default_transition_length: 0s
     segments:
-    - id: rgb_led
-      from: 1
-      to: 1
+      - id: rgb_led
+        from: 1
+        to: 1
   - platform: partition
     name: led3
     id: led3
     default_transition_length: 0s
     segments:
-    - id: rgb_led
-      from: 2
-      to: 2
-  - platform: neopixelbus
+      - id: rgb_led
+        from: 2
+        to: 2
+  - platform: esp32_rmt_led_strip
     num_leds: 3
     pin: GPIO16
     name: "RGB strip"
-    variant: SK6812
+    chipset: WS2812
+    rgb_order: GRB
     id: rgb_led
     default_transition_length: 0s
-
 switch:
   - platform: gpio
     name: "PMS7003_SET"
