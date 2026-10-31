@@ -1,5 +1,11 @@
 ![](images/iaq_device_3d.png)
 
+
+# Changes Made
+Screen Macros
+Latest ESPHome changes
+Extra Screen and Macros
+
 # IAQ (Indoor Air Quality) Board 
 IAQ Board is a DIY (Do-It-Yourself) device for measuring internal air quality. I needed a device for measuring some air quality parameters which is **compact, cheap, simple and capable**. After I prototyped it, decided instead of mounting into some odd box with cables hanging inside between the sensors, why not just solder everything on a printed circuit board. I had some experience with this from the time when I was a student years ago and luckily now it's much easier to crate PCB and very cheap to get it printed. 
 
