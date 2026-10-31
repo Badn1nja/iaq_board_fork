@@ -112,7 +112,7 @@ button:
             else { id(night_mode) = true; }
 
   - platform: template
-    name: "+/- Script"
+    name: "+⁄- Script"
     id: iaq_min_max_zero_script
     # Optional variables:
     icon: "mdi:refresh"
